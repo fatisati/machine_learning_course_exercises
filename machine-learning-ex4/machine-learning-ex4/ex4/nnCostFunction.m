@@ -38,12 +38,75 @@ Theta2_grad = zeros(size(Theta2));
 %         variable J. After implementing Part 1, you can verify that your
 %         cost function computation is correct by verifying the cost
 %         computed in ex4.m
+
+p = zeros(size(X, 1), 1);
+a1 = [ones(m, 1) X];
+z2 = a1 * Theta1';
+
+
+a2 = sigmoid(z2);
+a2 = [ones(size(a2, 1), 1) a2];
+
+z3 = a2 * Theta2';
+sp = sigmoid(z3);
+
+
+J = 0;
+yy = zeros(m, num_labels);
+
+for i=1:m,
+
+	yk = zeros(num_labels, 1);
+	yk(y(i))=1;
+	yy(i,:)=yk;	
+		for k=1:num_labels,
+			J += yk(k)*log(sp(i,k)) + (1-yk(k))*log(1-sp(i,k));
+		end;
+end;
+
+
+
+t  = sum(sum(Theta1.*Theta1)) + sum(sum(Theta2.*Theta2));
+
+t -= (sum(Theta1(:,1).*Theta1(:,1)) + sum(Theta2(:,1).*Theta2(:,1)));
+
+t *= (lambda/2);
+J = -1*J
+J += t;
+J /= m;
 %
 % Part 2: Implement the backpropagation algorithm to compute the gradients
 %         Theta1_grad and Theta2_grad. You should return the partial derivatives of
 %         the cost function with respect to Theta1 and Theta2 in Theta1_grad and
 %         Theta2_grad, respectively. After implementing Part 2, you can check
 %         that your implementation is correct by running checkNNGradients
+
+
+delta_3 = sp - yy;
+
+
+delta_2 = (delta_3 * (Theta2(:, 2:end))) .* sigmoidGradient(z2);
+
+
+%de1 = delta_2' * a1(:, 2:end);
+
+de1 = delta_2' * a1;
+%size(de1)
+de2 = delta_3' * a2;
+%size(de2)
+
+Theta1_grad = de1 ./ m;
+Theta2_grad = de2 ./ m;
+
+Theta1(:,1) = 0;
+Theta2(:,1) = 0;
+
+Theta1 = (lambda/m)*(Theta1);
+Theta2 = (lambda/m)*(Theta2);
+
+Theta1_grad += Theta1;
+Theta2_grad += Theta2;
+
 %
 %         Note: The vector y passed into the function is a vector of labels
 %               containing values from 1..K. You need to map this vector into a 
