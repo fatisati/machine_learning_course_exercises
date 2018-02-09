@@ -11,9 +11,18 @@ m = length(y); % number of training examples
 % You need to return the following variables correctly 
 J = 0;
 grad = zeros(size(theta));
-size X
-size theta
 
+h = X * theta;
+
+
+err = h - y;
+err = err .^ 2;
+J = sum(err);
+theta(1, :)=0;
+J = J + sum(theta .* theta)*(lambda);
+J /= (2*m);
+
+grad = (X' * (h-y))/m + theta/m*lambda;
 % ====================== YOUR CODE HERE ======================
 % Instructions: Compute the cost and gradient of regularized linear 
 %               regression for a particular choice of theta.

@@ -25,6 +25,12 @@ error_val = zeros(length(lambda_vec), 1);
 %               you the errors obtained after training with 
 %               lambda = lambda_vec(i)
 %
+
+for i=1:length(lambda_vec),
+	[theta] = trainLinearReg(X,  y, lambda_vec(i));
+	error_train(i) = linearRegCostFunction(X, y, theta, 0);
+	error_val(i) = linearRegCostFunction(Xval, yval, theta, 0);
+end
 % Note: You can loop over lambda_vec with the following:
 %
 %       for i = 1:length(lambda_vec)
